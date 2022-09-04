@@ -24,18 +24,18 @@ public class AdminService implements IAdminService{
     @Autowired
     MailService mailService;
     @Override
-    public AdminModel addAdmin(AdminDto adminDto) {
+    public Response addAdmin(AdminDto adminDto) {
         AdminModel adminModel = new AdminModel(adminDto);
         adminModel.setCreatorStamp(LocalDateTime.now());
         adminRepository.save(adminModel);
         String body = "Admin added: " +adminModel.getId();
         String subject = "Admin registration successfully";
         mailService.send(adminModel.getEmailId(), body, subject);
-        return adminModel;
+        return new Response("Success", 200, adminModel);
     }
 
     @Override
-    public AdminModel updateAdmin(long id, String token, AdminDto adminDto) {
+    public Response updateAdmin(long id, String token, AdminDto adminDto) {
             Long userId = tokenUtil.decodeToken(token);
             Optional<AdminModel> isAdminPresent = adminRepository.findById(userId);
             if(isAdminPresent.isPresent()){
@@ -46,7 +46,7 @@ public class AdminService implements IAdminService{
                 isAdminPresent.get().setProfilePath(adminDto.getProfilePath());
                 isAdminPresent.get().setStatus(adminDto.getStatus());
                 adminRepository.save(isAdminPresent.get());
-                return isAdminPresent.get();
+                return new Response("Success", 200, isAdminPresent.get());
             }
             throw new AdminNotFoundException(400, "Admin Not Present!!!");
         }
@@ -61,7 +61,7 @@ public class AdminService implements IAdminService{
     }
 
     @Override
-    public AdminModel resetPassword(String emailId) {
+    public Response resetPassword(String emailId) {
         Optional<AdminModel> isEmailPresent = adminRepository.findByEmailId(emailId);
         if(isEmailPresent.isPresent()){
             String token = tokenUtil.createToken(isEmailPresent.get().getId());
@@ -70,17 +70,17 @@ public class AdminService implements IAdminService{
             String body = "For reset password click this link" +url+"use this to reset"+token;
             mailService.send(isEmailPresent.get().getEmailId(), body, subject);
         }
-        return isEmailPresent.get();
+        return new Response("Success", 200, isEmailPresent.get());
     }
 
     @Override
-    public AdminModel changePassword(String token, String password) {
+    public Response changePassword(String token, String password) {
         Long id = tokenUtil.decodeToken(token);
         Optional<AdminModel> isIdPresent = adminRepository.findById(id);
         if(isIdPresent.isPresent()){
             isIdPresent.get().setPassword(password);
             adminRepository.save(isIdPresent.get());
-            return isIdPresent.get();
+            return new Response("Success", 200, isIdPresent.get());
         }
         else{
             throw new AdminNotFoundException(400, "Password is worng");
@@ -89,7 +89,7 @@ public class AdminService implements IAdminService{
 
 
     @Override
-    public AdminModel getDeleteAdmin(long id, String token) {
+    public Response deleteAdmin(long id, String token) {
         Long userId = tokenUtil.decodeToken(token);
         Optional<AdminModel> isAdminPresent = adminRepository.findById(userId);
         if(isAdminPresent.isPresent()){
@@ -97,7 +97,7 @@ public class AdminService implements IAdminService{
             String body = "Admin deleted: " +isAdminPresent.get().getId();
             String subject = "Admin deleted successfully";
             mailService.send(isAdminPresent.get().getEmailId(), body, subject);
-            return isAdminPresent.get();
+            return new Response("Success", 200, isAdminPresent.get());
         }
         throw new AdminNotFoundException(400, "Admin does not found");
     }
@@ -114,5 +114,14 @@ public class AdminService implements IAdminService{
             }
             throw new AdminNotFoundException(400, "Admin Not Found");
         }
+    @Override
+    public Boolean validate(String token){
+        Long userId = tokenUtil.decodeToken(token);
+        Optional<AdminModel> isAdmin = adminRepository.findById(userId);
+        if (isAdmin.isPresent()){
+            return true;
+        }
+        return false;
+    }
 
 }

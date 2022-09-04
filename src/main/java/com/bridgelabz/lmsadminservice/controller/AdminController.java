@@ -5,6 +5,8 @@ import com.bridgelabz.lmsadminservice.model.AdminModel;
 import com.bridgelabz.lmsadminservice.service.IAdminService;
 import com.bridgelabz.lmsadminservice.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,38 +17,49 @@ public class AdminController {
     IAdminService adminService;
 
     @PostMapping("/addadmin")
-    public AdminModel addAdmin(@RequestBody AdminDto adminDto){
-        return adminService.addAdmin(adminDto);
+    public ResponseEntity<Response> addAdmin(@RequestBody AdminDto adminDto){
+        Response response = adminService.addAdmin(adminDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public AdminModel updateAdmin(@RequestHeader String token, @RequestBody AdminDto adminDto, @PathVariable long id){
-        return adminService.updateAdmin(id, token, adminDto);
+    public ResponseEntity<Response> updateAdmin(@RequestHeader String token, @RequestBody AdminDto adminDto, @PathVariable long id){
+        Response response = adminService.updateAdmin(id, token, adminDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/getadmindata")
-    public List<AdminModel> getAllAdmin(@RequestHeader String token){
-        return adminService.getAdminData(token);
+    public ResponseEntity<List<?>> getAllAdmin(@RequestHeader String token){
+        List<AdminModel> response = adminService.getAdminData(token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteadmin")
-    public AdminModel deleteAdmin(@PathVariable long id, @RequestHeader String token){
-        return adminService.getDeleteAdmin(id, token);
+    public ResponseEntity<Response> deleteAdmin(@PathVariable long id, @RequestHeader String token){
+        Response response = adminService.deleteAdmin(id, token);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public Response login(@RequestParam String email, @RequestParam String password){
-        return adminService.login(email, password);
+    public ResponseEntity<Response> login(@RequestParam String email, @RequestParam String password){
+        Response response = adminService.login(email, password);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/changepassword")
-    public AdminModel changePassword(@RequestHeader String token, @RequestParam String password){
-        return adminService.changePassword(token, password);
+    public ResponseEntity<Response> changePassword(@RequestHeader String token, @RequestParam String password){
+        Response response = adminService.changePassword(token, password);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
 
     @PutMapping("/resetpassword")
-    public AdminModel resetPassword(@RequestParam String emailId){
-        return adminService.resetPassword(emailId);
+    public ResponseEntity<Response> resetPassword(@RequestParam String emailId){
+        Response response = adminService.resetPassword(emailId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @GetMapping("/validate/{token}")
+    public Boolean validate(@PathVariable String token){
+        return adminService.validate(token);
     }
 }

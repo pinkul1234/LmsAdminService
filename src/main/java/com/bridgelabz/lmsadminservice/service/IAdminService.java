@@ -9,17 +9,19 @@ import java.util.List;
 
 @Service
 public interface IAdminService {
-    AdminModel addAdmin(AdminDto adminDto);
+    Response addAdmin(AdminDto adminDto);
 
-    AdminModel changePassword(String token, String password);
+    Response changePassword(String token, String password);
 
     Response login(String email, String password);
 
     List<AdminModel> getAdminData(String token);
 
-    AdminModel resetPassword(String emailId);
+    Response resetPassword(String emailId);
 
-    AdminModel updateAdmin(long id, String token, AdminDto adminDto);
+    Response updateAdmin(long id, String token, AdminDto adminDto);
 
-    AdminModel getDeleteAdmin(long id, String token);
+    Response deleteAdmin(long id, String token);
+
+    Boolean validate(String token);
 }
