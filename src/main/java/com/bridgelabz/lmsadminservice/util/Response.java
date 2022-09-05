@@ -10,7 +10,7 @@ import lombok.ToString;
 public class Response {
     private String message;
     private long errorCode;
-    private Object token;
+    private Object object;
 
 
     public Response() {

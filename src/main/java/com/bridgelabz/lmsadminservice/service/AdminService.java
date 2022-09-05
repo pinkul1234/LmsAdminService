@@ -5,6 +5,7 @@ import com.bridgelabz.lmsadminservice.exception.AdminNotFoundException;
 import com.bridgelabz.lmsadminservice.model.AdminModel;
 import com.bridgelabz.lmsadminservice.repository.AdminRepository;
 import com.bridgelabz.lmsadminservice.util.Response;
+import com.bridgelabz.lmsadminservice.util.ResponseToken;
 import com.bridgelabz.lmsadminservice.util.TokenUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,7 @@ public class AdminService implements IAdminService{
         Optional<AdminModel> isEmailPresent = adminRepository.findByEmailId(emailId);
         if(isEmailPresent.isPresent()){
             String token = tokenUtil.createToken(isEmailPresent.get().getId());
-            String url = "http://localhost:8081/admin/changePassword";
+            String url = "http://localhost:8082/admin/changePassword";
             String subject = "reset password";
             String body = "For reset password click this link" +url+"use this to reset"+token;
             mailService.send(isEmailPresent.get().getEmailId(), body, subject);
@@ -103,12 +104,12 @@ public class AdminService implements IAdminService{
     }
 
     @Override
-    public Response login(String email, String password) {
+    public ResponseToken login(String email, String password) {
             Optional<AdminModel> isAdminPresent = adminRepository.findByEmailId(email);
             if(isAdminPresent.isPresent()) {
                 if (isAdminPresent.get().getPassword().equals(password)) {
                     String token = tokenUtil.createToken(isAdminPresent.get().getId());
-                    return new Response("login successful", 200, token);
+                    return new ResponseToken(200, "success", token);
                 }
                 throw new AdminNotFoundException(400, "Invalid Credentials");
             }

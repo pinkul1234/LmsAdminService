@@ -4,6 +4,7 @@ import com.bridgelabz.lmsadminservice.dto.AdminDto;
 import com.bridgelabz.lmsadminservice.model.AdminModel;
 import com.bridgelabz.lmsadminservice.service.IAdminService;
 import com.bridgelabz.lmsadminservice.util.Response;
+import com.bridgelabz.lmsadminservice.util.ResponseToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +42,9 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response> login(@RequestParam String email, @RequestParam String password){
-        Response response = adminService.login(email, password);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<ResponseToken> login(@RequestParam String email, @RequestParam String password){
+        ResponseToken responseToken = adminService.login(email, password);
+        return new ResponseEntity<>(responseToken, HttpStatus.OK);
     }
 
     @PutMapping("/changepassword")

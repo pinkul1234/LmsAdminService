@@ -3,6 +3,7 @@ package com.bridgelabz.lmsadminservice.service;
 import com.bridgelabz.lmsadminservice.dto.AdminDto;
 import com.bridgelabz.lmsadminservice.model.AdminModel;
 import com.bridgelabz.lmsadminservice.util.Response;
+import com.bridgelabz.lmsadminservice.util.ResponseToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public interface IAdminService {
 
     Response changePassword(String token, String password);
 
-    Response login(String email, String password);
+    ResponseToken login(String email, String password);
 
     List<AdminModel> getAdminData(String token);
 

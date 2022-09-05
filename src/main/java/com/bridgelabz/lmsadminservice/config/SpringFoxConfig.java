@@ -65,7 +65,7 @@ public class SpringFoxConfig implements WebMvcConfigurer {
 
                 .select()
 
-                .apis(RequestHandlerSelectors.basePackage("com.bridgelabz.lmsproject.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.bridgelabz.lmsadminservice"))
 
                 .paths(PathSelectors.any())
 
